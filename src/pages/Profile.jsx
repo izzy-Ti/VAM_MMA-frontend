@@ -3,7 +3,7 @@ import { UserCircle, Wallet, History, AlertCircle } from 'lucide-react';
 import api from '../lib/api';
 
 const Profile = () => {
-  const [user, setUser] = useState({ balance: 1500, username: 'Babi' }); // Mocked
+  const [user, setUser] = useState({ balance: 0, username: 'Loading...' });
   const [bets, setBets] = useState([]);
   const [loading, setLoading] = useState(true);
 
@@ -13,7 +13,14 @@ const Profile = () => {
 
   const fetchMyBets = async () => {
     try {
-      // In a real scenario we'd also fetch user info
+      try {
+        const userRes = await api.get('/auth/me');
+        setUser(userRes.data);
+      } catch (authErr) {
+        console.warn('Could not fetch user', authErr);
+        setUser({ balance: 0, username: 'Guest' });
+      }
+
       const res = await api.get('/bets/my-bets');
       setBets(res.data);
     } catch (err) {

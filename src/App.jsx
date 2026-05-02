@@ -1,12 +1,47 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import Layout from './components/Layout';
 import Home from './pages/Home';
 import Fights from './pages/Fights';
 import Deposit from './pages/Deposit';
 import Profile from './pages/Profile';
+import api from './lib/api';
 
 function App() {
+  const [authReady, setAuthReady] = useState(false);
+
+  useEffect(() => {
+    const tg = window.Telegram?.WebApp;
+    if (tg) {
+      tg.ready();
+      tg.expand();
+      
+      const initData = tg.initData;
+      
+      if (initData) {
+        api.post('/auth/login', { initData })
+          .then(res => {
+            localStorage.setItem('vamos_token', res.data.token);
+            setAuthReady(true);
+          })
+          .catch(err => {
+            console.error('Auth error:', err);
+            // Fallback for demo/testing if auth fails
+            setAuthReady(true);
+          });
+      } else {
+        // Not running inside telegram or no initData available
+        setAuthReady(true);
+      }
+    } else {
+      setAuthReady(true);
+    }
+  }, []);
+
+  if (!authReady) {
+    return <div className="min-h-screen bg-gray-950 flex items-center justify-center text-blue-500"><div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-500"></div></div>;
+  }
+
   return (
     <BrowserRouter>
       <Routes>

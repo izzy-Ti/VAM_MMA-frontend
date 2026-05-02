@@ -9,14 +9,16 @@ const Home = () => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    // In a real telegram mini app we would get the auth token via initData.
-    // For now we'll mock or just attempt to fetch
     const fetchDashboard = async () => {
       try {
-        // Assume user is already logged in for now, or just show a default UI
-        // const userRes = await api.get('/auth/me');
-        // setUser(userRes.data);
-        setUser({ balance: 1500, username: 'Babi' }); // Mocking user for UI display
+        try {
+          const userRes = await api.get('/auth/me');
+          setUser(userRes.data);
+        } catch (authErr) {
+          console.warn('Could not fetch user, using fallback', authErr);
+          // Fallback if not logged in
+          setUser({ balance: 0, username: 'Guest' });
+        }
 
         const fightsRes = await api.get('/fights');
         setFights(fightsRes.data.slice(0, 3)); // Top 3 fights
