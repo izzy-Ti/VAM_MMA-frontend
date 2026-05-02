@@ -27,7 +27,7 @@ const Layout = () => {
         <Outlet />
       </main>
 
-      <nav className="absolute bottom-0 w-full max-w-md bg-gray-900 border-t border-gray-800 py-3 px-6 flex justify-between items-center rounded-t-xl z-20 shadow-[0_-10px_40px_rgba(0,0,0,0.5)]">
+      <nav className="fixed bottom-0 left-1/2 -translate-x-1/2 w-full max-w-md bg-gray-900 border-t border-gray-800 py-3 px-6 flex justify-between items-center rounded-t-xl z-20 shadow-[0_-10px_40px_rgba(0,0,0,0.5)]">
         <NavLink to="/" className={({ isActive }) => `flex flex-col items-center gap-1 ${isActive ? 'text-blue-500' : 'text-gray-400'}`}>
           <Home size={24} />
           <span className="text-[10px] font-medium uppercase tracking-wider">Home</span>
