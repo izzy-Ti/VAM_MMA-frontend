@@ -60,6 +60,9 @@ const Profile = () => {
                 <div>
                   <p className="text-sm font-bold text-white mb-1">Fight: {bet.fightId?.fighter1Name} vs {bet.fightId?.fighter2Name}</p>
                   <p className="text-xs text-gray-400">Amount: <span className="font-bold text-white">{bet.amount} ETB</span></p>
+                  {bet.status === 'pending' && bet.potentialPayout > 0 && (
+                    <p className="text-xs text-gray-400 mt-0.5">Est. Prize: <span className="font-bold text-green-400">{bet.potentialPayout.toFixed(2)} ETB</span></p>
+                  )}
                 </div>
                 <div className="text-right">
                   <span className={`text-xs font-bold px-2 py-1 rounded uppercase tracking-wider ${
