@@ -58,7 +58,7 @@ const Profile = () => {
             {bets.map(bet => (
               <div key={bet._id} className="bg-gray-900 border border-gray-800 rounded-xl p-4 flex justify-between items-center">
                 <div>
-                  <p className="text-sm font-bold text-white mb-1">Fight: {bet.fightId?.name || 'Unknown'}</p>
+                  <p className="text-sm font-bold text-white mb-1">Fight: {bet.fightId?.fighter1Name} vs {bet.fightId?.fighter2Name}</p>
                   <p className="text-xs text-gray-400">Amount: <span className="font-bold text-white">{bet.amount} ETB</span></p>
                 </div>
                 <div className="text-right">

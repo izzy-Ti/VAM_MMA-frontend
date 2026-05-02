@@ -74,46 +74,49 @@ const Fights = () => {
       ) : fights.length > 0 ? (
         <div className="space-y-4">
           {fights.map(fight => (
-            <div key={fight._id} className="bg-gray-900 border border-gray-800 rounded-2xl overflow-hidden shadow-lg">
-              <div className="bg-gray-800 px-4 py-3 border-b border-gray-700 flex justify-between items-center">
-                <div>
-                  <span className="text-xs font-bold text-blue-400 uppercase tracking-wider block">{fight.name}</span>
-                  <span className="text-[10px] text-gray-400">{new Date(fight.date).toLocaleString()}</span>
-                </div>
-                <div className="text-right">
-                  <span className="text-[10px] text-gray-400 uppercase block">Total Pool</span>
-                  <span className="text-sm font-bold text-green-400">{fight.totalPool || 0} ETB</span>
-                </div>
+            <div key={fight._id} className="bg-gray-900 border border-gray-800 rounded-2xl overflow-hidden shadow-xl group">
+              <div className="bg-gray-800 px-4 py-2 border-b border-gray-700 flex justify-between items-center text-[10px] font-bold uppercase tracking-widest">
+                <span className="text-blue-400">{new Date(fight.date).toLocaleString()}</span>
+                <span className="text-gray-400">Total Pool: <span className="text-green-500">{fight.totalPool || 0} ETB</span></span>
               </div>
               
+              <div className="relative h-44 bg-gradient-to-b from-gray-800 to-gray-900 overflow-hidden">
+                {/* Fighter 1 Image */}
+                <div className="absolute left-0 bottom-0 w-[55%] h-[110%] transition-transform duration-500 group-hover:scale-105 origin-bottom-left">
+                  {fight.fighter1Image && (
+                    <img src={fight.fighter1Image} alt={fight.fighter1Name} className="h-full w-full object-contain object-bottom drop-shadow-[0_10px_20px_rgba(0,0,0,0.5)]" />
+                  )}
+                </div>
+                {/* Fighter 2 Image */}
+                <div className="absolute right-0 bottom-0 w-[55%] h-[110%] transition-transform duration-500 group-hover:scale-105 origin-bottom-right">
+                  {fight.fighter2Image && (
+                    <img src={fight.fighter2Image} alt={fight.fighter2Name} className="h-full w-full object-contain object-bottom drop-shadow-[0_10px_20px_rgba(0,0,0,0.5)]" />
+                  )}
+                </div>
+                {/* VS Overlay */}
+                <div className="absolute inset-0 flex items-center justify-center z-10 pointer-events-none">
+                  <span className="text-4xl font-black italic text-transparent bg-clip-text bg-gradient-to-b from-red-600 to-orange-400 drop-shadow-2xl">VS</span>
+                </div>
+              </div>
+
               <div className="p-4">
-                <div className="flex items-center justify-between mb-4">
-                  <div className="text-center w-[45%]">
-                    <p className="font-bold text-lg leading-tight">{fight.fighter1?.name || 'Fighter 1'}</p>
-                    <p className="text-xs text-gray-400 mt-1">{fight.fighter1?.stats?.record || '0-0-0'}</p>
-                  </div>
-                  <div className="flex justify-center w-[10%]">
-                    <Swords className="text-red-500" size={24} />
-                  </div>
-                  <div className="text-center w-[45%]">
-                    <p className="font-bold text-lg leading-tight">{fight.fighter2?.name || 'Fighter 2'}</p>
-                    <p className="text-xs text-gray-400 mt-1">{fight.fighter2?.stats?.record || '0-0-0'}</p>
-                  </div>
+                <div className="flex justify-between items-center mb-4">
+                  <p className="font-black text-base uppercase tracking-tighter text-white truncate max-w-[45%]">{fight.fighter1Name}</p>
+                  <p className="font-black text-base uppercase tracking-tighter text-white truncate max-w-[45%]">{fight.fighter2Name}</p>
                 </div>
 
-                <div className="space-y-2 mt-4">
-                  <p className="text-xs text-gray-500 font-medium uppercase tracking-wider text-center mb-2">Betting Options</p>
+                <div className="space-y-2">
                   {fight.bettingOptions.map(opt => (
                     <button
                       key={opt._id}
                       onClick={() => openBetModal(fight, opt)}
                       disabled={fight.status !== 'upcoming'}
-                      className="w-full flex justify-between items-center bg-gray-800 hover:bg-gray-750 p-3 rounded-xl border border-gray-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed group"
+                      className="w-full flex justify-between items-center bg-gray-800 hover:bg-blue-900/20 p-3 rounded-xl border border-gray-700 hover:border-blue-500/50 transition-all disabled:opacity-50 disabled:cursor-not-allowed group"
                     >
-                      <span className="font-semibold text-sm group-hover:text-blue-400 transition-colors">{opt.option}</span>
+                      <span className="font-bold text-xs uppercase tracking-wider group-hover:text-blue-400">{opt.option}</span>
                       <div className="flex flex-col items-end">
                         <span className="text-sm font-black text-white">{opt.dynamicOdds > 0 ? `${opt.dynamicOdds}x` : '0.00x'}</span>
-                        <span className="text-[10px] text-gray-500">Pool: {opt.totalBet || 0}</span>
+                        <span className="text-[10px] text-gray-500 font-bold uppercase tracking-tighter">Pool: {opt.totalBet || 0}</span>
                       </div>
                     </button>
                   ))}
@@ -136,12 +139,13 @@ const Fights = () => {
             <div className="flex justify-between items-start mb-6">
               <div>
                 <h3 className="text-xl font-bold">Place Bet</h3>
-                <p className="text-sm text-gray-400 mt-1">{selectedFight.name}</p>
+                <p className="text-xs font-bold text-blue-400 uppercase tracking-widest mt-1">{selectedFight.fighter1Name} vs {selectedFight.fighter2Name}</p>
               </div>
               <button onClick={() => setSelectedOption(null)} className="p-2 bg-gray-800 rounded-full hover:bg-gray-700">
                 <X size={20} className="text-gray-400" />
               </button>
             </div>
+
 
             <div className="bg-gray-800 rounded-xl p-4 mb-6 border border-gray-700">
               <div className="flex justify-between items-center mb-2">

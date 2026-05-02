@@ -12,7 +12,7 @@ const AdminFights = () => {
   const [selectedFight, setSelectedFight] = useState(null);
 
   // Form states
-  const [newFight, setNewFight] = useState({ title: '', description: '', date: '', fighter1: '', fighter2: '' });
+  const [newFight, setNewFight] = useState({ fighter1Name: '', fighter1Image: '', fighter2Name: '', fighter2Image: '', date: '' });
   const [updateData, setUpdateData] = useState({ status: '', winner: '' });
 
   useEffect(() => {
@@ -33,19 +33,9 @@ const AdminFights = () => {
   const handleCreateSubmit = async (e) => {
     e.preventDefault();
     try {
-      const payload = {
-        title: newFight.title,
-        description: newFight.description,
-        date: newFight.date,
-        bettingOptions: [
-          { option: newFight.fighter1 },
-          { option: newFight.fighter2 }
-        ],
-        status: 'upcoming'
-      };
-      await api.post('/fights', payload);
+      await api.post('/fights', newFight);
       setCreateModalOpen(false);
-      setNewFight({ title: '', description: '', date: '', fighter1: '', fighter2: '' });
+      setNewFight({ fighter1Name: '', fighter1Image: '', fighter2Name: '', fighter2Image: '', date: '' });
       fetchFights();
     } catch (err) {
       console.error(err);
@@ -95,7 +85,7 @@ const AdminFights = () => {
           <div key={fight._id} className="bg-gray-900 border border-gray-800 rounded-xl overflow-hidden hover:border-gray-700 transition-colors">
             <div className="p-6">
               <div className="flex justify-between items-start mb-4">
-                <h3 className="text-xl font-bold">{fight.title}</h3>
+                <h3 className="text-lg font-bold">{fight.fighter1Name} vs {fight.fighter2Name}</h3>
                 <span className={`px-3 py-1 rounded-full text-xs font-medium ${
                   fight.status === 'upcoming' ? 'bg-blue-500/10 text-blue-500' :
                   fight.status === 'ongoing' ? 'bg-yellow-500/10 text-yellow-500' :
@@ -105,14 +95,14 @@ const AdminFights = () => {
                 </span>
               </div>
               
-              <div className="flex justify-between items-center bg-gray-950 p-4 rounded-lg mb-4">
-                <div className="text-center flex-1">
-                  <p className="font-bold text-lg text-red-500">{fight.bettingOptions[0]?.option}</p>
+              <div className="flex justify-between items-center bg-gray-950 p-4 rounded-lg mb-4 relative overflow-hidden h-32">
+                <div className="absolute left-0 bottom-0 w-1/2 h-full">
+                  {fight.fighter1Image && <img src={fight.fighter1Image} alt={fight.fighter1Name} className="h-full w-full object-contain object-bottom" />}
                 </div>
-                <div className="px-4 text-gray-500 font-black italic">VS</div>
-                <div className="text-center flex-1">
-                  <p className="font-bold text-lg text-blue-500">{fight.bettingOptions[1]?.option}</p>
+                <div className="absolute right-0 bottom-0 w-1/2 h-full">
+                  {fight.fighter2Image && <img src={fight.fighter2Image} alt={fight.fighter2Name} className="h-full w-full object-contain object-bottom" />}
                 </div>
+                <div className="z-10 mx-auto bg-gray-900/80 px-2 py-1 rounded text-xs font-black italic text-gray-400">VS</div>
               </div>
               
               <div className="text-sm text-gray-400 mb-6 flex items-center justify-between">
@@ -138,31 +128,34 @@ const AdminFights = () => {
       {/* Create Modal */}
       {createModalOpen && (
         <div className="fixed inset-0 bg-black/80 flex justify-center items-center z-50 p-4 backdrop-blur-sm">
-          <div className="bg-gray-900 border border-gray-800 p-6 rounded-xl w-full max-w-md shadow-2xl">
+          <div className="bg-gray-900 border border-gray-800 p-6 rounded-xl w-full max-w-md shadow-2xl overflow-y-auto max-h-[90vh]">
             <h3 className="text-2xl font-bold mb-6">Create New Fight</h3>
             <form onSubmit={handleCreateSubmit} className="space-y-4">
-              <div>
-                <label className="block text-sm font-medium text-gray-400 mb-1">Fight Title (e.g. UFC 300 Main Event)</label>
-                <input required type="text" value={newFight.title} onChange={e => setNewFight({...newFight, title: e.target.value})} className="w-full bg-gray-950 border border-gray-800 rounded-lg p-3 text-white focus:border-blue-500 outline-none" />
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <label className="block text-sm font-medium text-gray-400 mb-1">Fighter 1 Name</label>
+                  <input required type="text" value={newFight.fighter1Name} onChange={e => setNewFight({...newFight, fighter1Name: e.target.value})} className="w-full bg-gray-950 border border-gray-800 rounded-lg p-3 text-white focus:border-blue-500 outline-none" />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-400 mb-1">Fighter 1 Image URL</label>
+                  <input type="text" value={newFight.fighter1Image} onChange={e => setNewFight({...newFight, fighter1Image: e.target.value})} className="w-full bg-gray-950 border border-gray-800 rounded-lg p-3 text-white focus:border-blue-500 outline-none" placeholder="https://..." />
+                </div>
               </div>
-              <div>
-                <label className="block text-sm font-medium text-gray-400 mb-1">Description</label>
-                <input required type="text" value={newFight.description} onChange={e => setNewFight({...newFight, description: e.target.value})} className="w-full bg-gray-950 border border-gray-800 rounded-lg p-3 text-white focus:border-blue-500 outline-none" />
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <label className="block text-sm font-medium text-gray-400 mb-1">Fighter 2 Name</label>
+                  <input required type="text" value={newFight.fighter2Name} onChange={e => setNewFight({...newFight, fighter2Name: e.target.value})} className="w-full bg-gray-950 border border-gray-800 rounded-lg p-3 text-white focus:border-blue-500 outline-none" />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-400 mb-1">Fighter 2 Image URL</label>
+                  <input type="text" value={newFight.fighter2Image} onChange={e => setNewFight({...newFight, fighter2Image: e.target.value})} className="w-full bg-gray-950 border border-gray-800 rounded-lg p-3 text-white focus:border-blue-500 outline-none" placeholder="https://..." />
+                </div>
               </div>
               <div>
                 <label className="block text-sm font-medium text-gray-400 mb-1">Date & Time</label>
                 <input required type="datetime-local" value={newFight.date} onChange={e => setNewFight({...newFight, date: e.target.value})} className="w-full bg-gray-950 border border-gray-800 rounded-lg p-3 text-white focus:border-blue-500 outline-none" />
               </div>
-              <div className="flex space-x-4">
-                <div className="flex-1">
-                  <label className="block text-sm font-medium text-gray-400 mb-1">Fighter 1</label>
-                  <input required type="text" value={newFight.fighter1} onChange={e => setNewFight({...newFight, fighter1: e.target.value})} className="w-full bg-gray-950 border border-gray-800 rounded-lg p-3 text-white focus:border-blue-500 outline-none" />
-                </div>
-                <div className="flex-1">
-                  <label className="block text-sm font-medium text-gray-400 mb-1">Fighter 2</label>
-                  <input required type="text" value={newFight.fighter2} onChange={e => setNewFight({...newFight, fighter2: e.target.value})} className="w-full bg-gray-950 border border-gray-800 rounded-lg p-3 text-white focus:border-blue-500 outline-none" />
-                </div>
-              </div>
+
               <div className="flex space-x-3 mt-6">
                 <button type="button" onClick={() => setCreateModalOpen(false)} className="flex-1 py-3 bg-gray-800 text-white rounded-lg font-medium hover:bg-gray-700 transition-colors">Cancel</button>
                 <button type="submit" className="flex-1 py-3 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-medium transition-colors">Create</button>

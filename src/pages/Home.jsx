@@ -63,22 +63,41 @@ const Home = () => {
         {loading ? (
           <div className="flex justify-center py-8"><div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-500"></div></div>
         ) : fights.length > 0 ? (
-          <div className="space-y-4">
+          <div className="space-y-6">
             {fights.map(fight => (
-              <div key={fight._id} className="bg-gray-900 border border-gray-800 rounded-xl p-4 shadow-md">
-                <div className="flex justify-between items-center mb-3 text-sm text-gray-400">
-                  <span className="font-semibold text-blue-400 text-xs uppercase tracking-wider">{new Date(fight.date).toLocaleDateString()}</span>
-                  <span className="bg-gray-800 px-2 py-1 rounded text-xs">Pool: {fight.totalPool || 0} ETB</span>
+              <div key={fight._id} className="bg-gray-900 border border-gray-800 rounded-2xl overflow-hidden shadow-xl hover:border-blue-900/50 transition-all group">
+                <div className="relative h-48 bg-gradient-to-t from-gray-900 to-transparent overflow-hidden">
+                  {/* Fighter 1 Image */}
+                  <div className="absolute left-0 bottom-0 w-[55%] h-[110%] transition-transform duration-500 group-hover:scale-105 origin-bottom-left">
+                    {fight.fighter1Image && (
+                      <img src={fight.fighter1Image} alt={fight.fighter1Name} className="h-full w-full object-contain object-bottom drop-shadow-[0_10px_20px_rgba(0,0,0,0.5)]" />
+                    )}
+                  </div>
+                  {/* Fighter 2 Image */}
+                  <div className="absolute right-0 bottom-0 w-[55%] h-[110%] transition-transform duration-500 group-hover:scale-105 origin-bottom-right">
+                    {fight.fighter2Image && (
+                      <img src={fight.fighter2Image} alt={fight.fighter2Name} className="h-full w-full object-contain object-bottom drop-shadow-[0_10px_20px_rgba(0,0,0,0.5)]" />
+                    )}
+                  </div>
+                  {/* VS Overlay */}
+                  <div className="absolute inset-0 flex items-center justify-center z-10 pointer-events-none">
+                    <span className="text-5xl font-black italic text-transparent bg-clip-text bg-gradient-to-b from-red-600 via-red-500 to-orange-400 drop-shadow-2xl">VS</span>
+                  </div>
                 </div>
-                <div className="flex items-center justify-between">
-                  <div className="text-center w-2/5">
-                    <p className="font-bold text-lg truncate">{fight.fighter1?.name || 'Fighter 1'}</p>
+                
+                <div className="p-4 pt-2">
+                  <div className="flex justify-between items-center mb-3">
+                    <div className="text-left">
+                      <p className="font-black text-lg uppercase tracking-tighter text-white">{fight.fighter1Name}</p>
+                    </div>
+                    <div className="text-right">
+                      <p className="font-black text-lg uppercase tracking-tighter text-white">{fight.fighter2Name}</p>
+                    </div>
                   </div>
-                  <div className="text-center w-1/5">
-                    <span className="text-red-500 font-black italic text-xl">VS</span>
-                  </div>
-                  <div className="text-center w-2/5">
-                    <p className="font-bold text-lg truncate">{fight.fighter2?.name || 'Fighter 2'}</p>
+                  
+                  <div className="flex justify-between items-center text-[10px] text-gray-500 font-bold uppercase tracking-widest border-t border-gray-800 pt-3">
+                    <span className="text-blue-400">{new Date(fight.date).toLocaleDateString()}</span>
+                    <span>Pool: <span className="text-green-500">{fight.totalPool || 0} ETB</span></span>
                   </div>
                 </div>
               </div>
