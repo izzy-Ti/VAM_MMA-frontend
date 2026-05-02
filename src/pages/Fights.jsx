@@ -146,8 +146,10 @@ const Fights = () => {
                               </span>
                               {opt.status === 'open' && (
                                 <div className="flex flex-col items-end shrink-0 ml-2">
-                                  <span className="text-sm font-black text-white">{opt.dynamicOdds > 0 ? `${opt.dynamicOdds}x` : '—'}</span>
-                                  <span className="text-[10px] text-gray-500 font-bold">{opt.totalBet || 0} ETB</span>
+                                  <span className="text-sm font-black text-white">{opt.dynamicOdds ? `${opt.dynamicOdds}x` : '—'}</span>
+                                  <span className="text-[10px] font-bold" style={{ color: opt.totalBet > 0 ? '#22c55e' : '#6b7280' }}>
+                                    {opt.totalBet > 0 ? `${opt.totalBet} ETB` : 'est.'}
+                                  </span>
                                 </div>
                               )}
                             </button>
