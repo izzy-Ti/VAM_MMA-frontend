@@ -27,6 +27,7 @@ function App() {
         api.post('/auth/login', { initData })
           .then(res => {
             localStorage.setItem('vamos_token', res.data.token);
+            localStorage.setItem('vamos_user_role', res.data.user.role);
             setAuthReady(true);
           })
           .catch(err => {
