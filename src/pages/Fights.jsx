@@ -72,58 +72,80 @@ const Fights = () => {
       {loading ? (
         <div className="flex justify-center py-12"><div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-500"></div></div>
       ) : fights.length > 0 ? (
-        <div className="space-y-4">
-          {fights.map(fight => (
-            <div key={fight._id} className="bg-gray-900 border border-gray-800 rounded-2xl overflow-hidden shadow-xl group">
-              <div className="bg-gray-800 px-4 py-2 border-b border-gray-700 flex justify-between items-center text-[10px] font-bold uppercase tracking-widest">
-                <span className="text-blue-400">{new Date(fight.date).toLocaleString()}</span>
-                <span className="text-gray-400">Total Pool: <span className="text-green-500">{fight.totalPool || 0} ETB</span></span>
-              </div>
-              
-              <div className="relative h-44 bg-gradient-to-b from-gray-800 to-gray-900 overflow-hidden">
-                {/* Fighter 1 Image */}
-                <div className="absolute left-0 bottom-0 w-[55%] h-[110%] transition-transform duration-500 group-hover:scale-105 origin-bottom-left">
-                  {fight.fighter1Image && (
-                    <img src={fight.fighter1Image} alt={fight.fighter1Name} className="h-full w-full object-contain object-bottom drop-shadow-[0_10px_20px_rgba(0,0,0,0.5)]" />
-                  )}
-                </div>
-                {/* Fighter 2 Image */}
-                <div className="absolute right-0 bottom-0 w-[55%] h-[110%] transition-transform duration-500 group-hover:scale-105 origin-bottom-right">
-                  {fight.fighter2Image && (
-                    <img src={fight.fighter2Image} alt={fight.fighter2Name} className="h-full w-full object-contain object-bottom drop-shadow-[0_10px_20px_rgba(0,0,0,0.5)]" />
-                  )}
-                </div>
-                {/* VS Overlay */}
-                <div className="absolute inset-0 flex items-center justify-center z-10 pointer-events-none">
-                  <span className="text-4xl font-black italic text-transparent bg-clip-text bg-gradient-to-b from-red-600 to-orange-400 drop-shadow-2xl">VS</span>
-                </div>
-              </div>
+        <div className="space-y-6">
+          {fights.map(fight => {
+            // Group options by category
+            const groups = {};
+            fight.bettingOptions.forEach(opt => {
+              if (!groups[opt.category]) groups[opt.category] = [];
+              groups[opt.category].push(opt);
+            });
 
-              <div className="p-4">
-                <div className="flex justify-between items-center mb-4">
-                  <p className="font-black text-base uppercase tracking-tighter text-white truncate max-w-[45%]">{fight.fighter1Name}</p>
-                  <p className="font-black text-base uppercase tracking-tighter text-white truncate max-w-[45%]">{fight.fighter2Name}</p>
+            return (
+              <div key={fight._id} className="bg-gray-900 border border-gray-800 rounded-2xl overflow-hidden shadow-xl group">
+                <div className="bg-gray-800 px-4 py-2 border-b border-gray-700 flex justify-between items-center text-[10px] font-bold uppercase tracking-widest">
+                  <span className="text-blue-400">{new Date(fight.date).toLocaleString()}</span>
+                  <span className="text-gray-400">Total Pool: <span className="text-green-500">{fight.totalPool || 0} ETB</span></span>
                 </div>
 
-                <div className="space-y-2">
-                  {fight.bettingOptions.map(opt => (
-                    <button
-                      key={opt._id}
-                      onClick={() => openBetModal(fight, opt)}
-                      disabled={fight.status !== 'upcoming'}
-                      className="w-full flex justify-between items-center bg-gray-800 hover:bg-blue-900/20 p-3 rounded-xl border border-gray-700 hover:border-blue-500/50 transition-all disabled:opacity-50 disabled:cursor-not-allowed group"
-                    >
-                      <span className="font-bold text-xs uppercase tracking-wider group-hover:text-blue-400">{opt.option}</span>
-                      <div className="flex flex-col items-end">
-                        <span className="text-sm font-black text-white">{opt.dynamicOdds > 0 ? `${opt.dynamicOdds}x` : '0.00x'}</span>
-                        <span className="text-[10px] text-gray-500 font-bold uppercase tracking-tighter">Pool: {opt.totalBet || 0}</span>
+                <div className="relative h-44 bg-gradient-to-b from-gray-800 to-gray-900 overflow-hidden">
+                  <div className="absolute left-0 bottom-0 w-[55%] h-[110%] transition-transform duration-500 group-hover:scale-105 origin-bottom-left">
+                    {fight.fighter1Image && <img src={fight.fighter1Image} alt={fight.fighter1Name} className="h-full w-full object-contain object-bottom drop-shadow-[0_10px_20px_rgba(0,0,0,0.5)]" />}
+                  </div>
+                  <div className="absolute right-0 bottom-0 w-[55%] h-[110%] transition-transform duration-500 group-hover:scale-105 origin-bottom-right">
+                    {fight.fighter2Image && <img src={fight.fighter2Image} alt={fight.fighter2Name} className="h-full w-full object-contain object-bottom drop-shadow-[0_10px_20px_rgba(0,0,0,0.5)]" />}
+                  </div>
+                  <div className="absolute inset-0 flex items-center justify-center z-10 pointer-events-none">
+                    <span className="text-4xl font-black italic text-transparent bg-clip-text bg-gradient-to-b from-red-600 to-orange-400 drop-shadow-2xl">VS</span>
+                  </div>
+                </div>
+
+                <div className="p-4">
+                  <div className="flex justify-between items-center mb-5">
+                    <p className="font-black text-base uppercase tracking-tighter text-white truncate max-w-[45%]">{fight.fighter1Name}</p>
+                    <p className="font-black text-base uppercase tracking-tighter text-white truncate max-w-[45%]">{fight.fighter2Name}</p>
+                  </div>
+
+                  {/* Grouped Betting Options */}
+                  <div className="space-y-4">
+                    {Object.entries(groups).map(([category, options]) => (
+                      <div key={category}>
+                        <p className="text-[10px] text-blue-400 font-bold uppercase tracking-widest mb-2 px-1">{category}</p>
+                        <div className="space-y-1.5">
+                          {options.map(opt => (
+                            <button
+                              key={opt._id}
+                              onClick={() => openBetModal(fight, opt)}
+                              disabled={fight.status !== 'upcoming' || opt.status !== 'open'}
+                              className={`w-full flex justify-between items-center p-3 rounded-xl border transition-all
+                                ${opt.status !== 'open'
+                                  ? opt.status === 'won'
+                                    ? 'bg-green-500/5 border-green-500/20 cursor-not-allowed'
+                                    : 'bg-gray-800/30 border-gray-800 opacity-50 cursor-not-allowed'
+                                  : 'bg-gray-800 hover:bg-blue-900/20 border-gray-700 hover:border-blue-500/50 group'
+                                }`}
+                            >
+                              <span className={`font-bold text-xs uppercase tracking-wider ${opt.status !== 'open' ? 'text-gray-500' : 'group-hover:text-blue-400 text-gray-200'}`}>
+                                {opt.option}
+                                {opt.status === 'won' && <span className="ml-2 text-green-400 normal-case">✓ Won</span>}
+                                {opt.status === 'lost' && <span className="ml-2 text-red-400 normal-case">✗ Lost</span>}
+                              </span>
+                              {opt.status === 'open' && (
+                                <div className="flex flex-col items-end shrink-0 ml-2">
+                                  <span className="text-sm font-black text-white">{opt.dynamicOdds > 0 ? `${opt.dynamicOdds}x` : '—'}</span>
+                                  <span className="text-[10px] text-gray-500 font-bold">{opt.totalBet || 0} ETB</span>
+                                </div>
+                              )}
+                            </button>
+                          ))}
+                        </div>
                       </div>
-                    </button>
-                  ))}
+                    ))}
+                  </div>
                 </div>
               </div>
-            </div>
-          ))}
+            );
+          })}
         </div>
       ) : (
         <div className="bg-gray-900 border border-gray-800 rounded-xl p-8 text-center flex flex-col items-center">
