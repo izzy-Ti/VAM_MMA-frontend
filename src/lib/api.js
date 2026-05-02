@@ -1,7 +1,7 @@
 import axios from 'axios';
 
 const api = axios.create({
-  baseURL: 'https://vm-mma-backend.onrender.com',
+  baseURL: 'https://vm-mma-backend.onrender.com/api',
 });
 
 // Request interceptor to add the auth token header to every request
