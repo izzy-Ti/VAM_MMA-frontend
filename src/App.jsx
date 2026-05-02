@@ -5,6 +5,10 @@ import Home from './pages/Home';
 import Fights from './pages/Fights';
 import Deposit from './pages/Deposit';
 import Profile from './pages/Profile';
+import AdminLayout from './components/AdminLayout';
+import Dashboard from './pages/admin/Dashboard';
+import AdminTransactions from './pages/admin/AdminTransactions';
+import AdminFights from './pages/admin/AdminFights';
 import api from './lib/api';
 
 function App() {
@@ -58,9 +62,17 @@ function App() {
           <Route path="deposit" element={<Deposit />} />
           <Route path="profile" element={<Profile />} />
         </Route>
+        
+        {/* Admin Routes */}
+        <Route path="/admin" element={<AdminLayout />}>
+          <Route index element={<Dashboard />} />
+          <Route path="transactions" element={<AdminTransactions />} />
+          <Route path="fights" element={<AdminFights />} />
+        </Route>
       </Routes>
     </BrowserRouter>
   );
 }
+
 
 export default App;
