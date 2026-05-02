@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Swords, X, AlertCircle, CheckCircle2 } from 'lucide-react';
+import { X, AlertCircle, CheckCircle2, ChevronDown, ChevronUp } from 'lucide-react';
 import api from '../lib/api';
 
 const Fights = () => {
@@ -10,6 +10,7 @@ const Fights = () => {
   const [betAmount, setBetAmount] = useState('');
   const [betLoading, setBetLoading] = useState(false);
   const [status, setStatus] = useState({ type: '', msg: '' });
+  const [expandedFight, setExpandedFight] = useState(null); // stores _id of expanded fight
 
   useEffect(() => {
     fetchFights();
@@ -101,13 +102,26 @@ const Fights = () => {
                 </div>
 
                 <div className="p-4">
-                  <div className="flex justify-between items-center mb-5">
+                  <div className="flex justify-between items-center mb-3">
                     <p className="font-black text-base uppercase tracking-tighter text-white truncate max-w-[45%]">{fight.fighter1Name}</p>
                     <p className="font-black text-base uppercase tracking-tighter text-white truncate max-w-[45%]">{fight.fighter2Name}</p>
                   </div>
 
-                  {/* Grouped Betting Options */}
-                  <div className="space-y-4">
+                  {/* Toggle Button */}
+                  <button
+                    onClick={() => setExpandedFight(expandedFight === fight._id ? null : fight._id)}
+                    className="w-full flex items-center justify-center gap-2 py-2.5 bg-blue-600/10 hover:bg-blue-600/20 border border-blue-500/20 text-blue-400 rounded-xl text-sm font-bold transition-colors"
+                  >
+                    {expandedFight === fight._id ? (
+                      <><ChevronUp size={16} /> Hide Betting Options</>
+                    ) : (
+                      <><ChevronDown size={16} /> View Betting Options ({fight.bettingOptions.length})</>
+                    )}
+                  </button>
+
+                  {/* Grouped Betting Options — only show when expanded */}
+                  {expandedFight === fight._id && (
+                    <div className="space-y-4 mt-4">
                     {Object.entries(groups).map(([category, options]) => (
                       <div key={category}>
                         <p className="text-[10px] text-blue-400 font-bold uppercase tracking-widest mb-2 px-1">{category}</p>
@@ -141,7 +155,8 @@ const Fights = () => {
                         </div>
                       </div>
                     ))}
-                  </div>
+                    </div>
+                  )}
                 </div>
               </div>
             );
