@@ -59,6 +59,7 @@ const Profile = () => {
               <div key={bet._id} className="bg-gray-900 border border-gray-800 rounded-xl p-4 flex justify-between items-center">
                 <div>
                   <p className="text-sm font-bold text-white mb-1">Fight: {bet.fightId?.fighter1Name} vs {bet.fightId?.fighter2Name}</p>
+                  <p className="text-xs text-blue-400 font-bold mb-1">{bet.fightId?.bettingOptions?.find(opt => opt._id === bet.optionId)?.option || 'Unknown Option'}</p>
                   <p className="text-xs text-gray-400">Amount: <span className="font-bold text-white">{bet.amount} ETB</span></p>
                   {bet.status === 'pending' && bet.potentialPayout > 0 && (
                     <p className="text-xs text-gray-400 mt-0.5">Est. Prize: <span className="font-bold text-green-400">{bet.potentialPayout.toFixed(2)} ETB</span></p>

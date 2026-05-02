@@ -120,6 +120,21 @@ const AdminFights = () => {
     }
   };
 
+  const handleUpdateOdds = async (optionId, initialOdds) => {
+    try {
+      await api.patch(`/fights/${selectedFight._id}/options/${optionId}`, { initialOdds });
+      setSelectedFight(prev => ({
+        ...prev,
+        bettingOptions: prev.bettingOptions.map(opt =>
+          opt._id === optionId ? { ...opt, initialOdds } : opt
+        )
+      }));
+      fetchFights();
+    } catch (err) {
+      alert('Failed to update odds: ' + (err.response?.data?.message || err.message));
+    }
+  };
+
   const handleDeleteFight = async (fightId) => {
     try {
       await api.delete(`/fights/${fightId}`);
@@ -335,10 +350,21 @@ const AdminFights = () => {
                                 <span className="text-sm truncate">{opt.option}</span>
                               </div>
                               {opt.status === 'open' ? (
-                                <div className="flex gap-1.5 ml-3 shrink-0">
-                                  <button onClick={() => handleSettleOption(opt._id, 'won')} className="px-2.5 py-1 bg-green-600/20 hover:bg-green-600/40 text-green-400 border border-green-500/30 rounded-lg text-xs font-bold transition-colors">Won</button>
-                                  <button onClick={() => handleSettleOption(opt._id, 'lost')} className="px-2.5 py-1 bg-red-600/20 hover:bg-red-600/40 text-red-400 border border-red-500/30 rounded-lg text-xs font-bold transition-colors">Lost</button>
-                                  <button onClick={() => handleSettleOption(opt._id, 'cancelled')} className="px-2.5 py-1 bg-yellow-600/20 hover:bg-yellow-600/40 text-yellow-400 border border-yellow-500/30 rounded-lg text-xs font-bold transition-colors">Cancel</button>
+                                <div className="flex gap-1.5 ml-3 shrink-0 items-center">
+                                  <div className="flex flex-col items-center mr-2">
+                                    <span className="text-[9px] text-gray-500 mb-0.5">INIT. ODDS</span>
+                                    <input 
+                                      type="number" 
+                                      step="0.1" 
+                                      min="1.0"
+                                      defaultValue={opt.initialOdds || 1.5} 
+                                      onBlur={(e) => handleUpdateOdds(opt._id, parseFloat(e.target.value))}
+                                      className="w-14 bg-gray-900 border border-gray-700 rounded p-1 text-xs text-center text-white focus:border-blue-500 outline-none"
+                                    />
+                                  </div>
+                                  <button onClick={() => handleSettleOption(opt._id, 'won')} className="px-2.5 py-1 bg-green-600/20 hover:bg-green-600/40 text-green-400 border border-green-500/30 rounded-lg text-xs font-bold transition-colors h-8">Won</button>
+                                  <button onClick={() => handleSettleOption(opt._id, 'lost')} className="px-2.5 py-1 bg-red-600/20 hover:bg-red-600/40 text-red-400 border border-red-500/30 rounded-lg text-xs font-bold transition-colors h-8">Lost</button>
+                                  <button onClick={() => handleSettleOption(opt._id, 'cancelled')} className="px-2.5 py-1 bg-yellow-600/20 hover:bg-yellow-600/40 text-yellow-400 border border-yellow-500/30 rounded-lg text-xs font-bold transition-colors h-8">Cancel</button>
                                 </div>
                               ) : (
                                 <button onClick={() => handleSettleOption(opt._id, 'open')} className="ml-3 px-2.5 py-1 bg-gray-700 hover:bg-gray-600 text-gray-400 rounded-lg text-xs font-medium transition-colors shrink-0">Reopen</button>
