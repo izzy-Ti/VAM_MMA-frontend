@@ -9,6 +9,7 @@ import api from './lib/api';
 
 function App() {
   const [authReady, setAuthReady] = useState(false);
+  const [authError, setAuthError] = useState(null);
 
   useEffect(() => {
     const tg = window.Telegram?.WebApp;
@@ -26,14 +27,15 @@ function App() {
           })
           .catch(err => {
             console.error('Auth error:', err);
-            // Fallback for demo/testing if auth fails
+            setAuthError(err.response?.data?.message || err.message || 'Unknown auth error');
             setAuthReady(true);
           });
       } else {
-        // Not running inside telegram or no initData available
+        setAuthError('No initData found. Please open inside Telegram.');
         setAuthReady(true);
       }
     } else {
+      setAuthError('Telegram WebApp not found.');
       setAuthReady(true);
     }
   }, []);
@@ -44,6 +46,11 @@ function App() {
 
   return (
     <BrowserRouter>
+      {authError && (
+        <div className="bg-red-500 text-white p-2 text-xs text-center z-50 relative">
+          Debug Error: {authError}
+        </div>
+      )}
       <Routes>
         <Route path="/" element={<Layout />}>
           <Route index element={<Home />} />
