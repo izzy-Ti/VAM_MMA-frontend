@@ -12,9 +12,9 @@ const Deposit = () => {
   const [loading, setLoading] = useState(false);
 
   const methods = [
-    { id: 'TeleBirr', name: 'TeleBirr', account: '0992013392', icon: Phone, color: 'text-green-500' },
-    { id: 'CBE', name: 'CBE', account: '1000596935234', icon: Building2, color: 'text-purple-500' },
-    { id: 'CBE_birr', name: 'CBE Birr', account: '0992013392', icon: Phone, color: 'text-yellow-500' },
+    { id: 'TeleBirr', name: 'TeleBirr', account: '0992013392', iconSrc: '/telebirr.jpg', color: 'border-green-500' },
+    { id: 'CBE', name: 'CBE', account: '1000596935234', iconSrc: '/CBE.ico', color: 'border-purple-500' },
+    { id: 'CBE_birr', name: 'CBE Birr', account: '0992013392', iconSrc: '/cbe_birr.png', color: 'border-yellow-500' },
   ];
 
   const activeMethod = methods.find(m => m.id === method);
@@ -75,11 +75,11 @@ const Deposit = () => {
                 onClick={() => setMethod(m.id)}
                 className={`flex flex-col items-center justify-center p-3 rounded-xl border transition-all ${
                   method === m.id 
-                  ? 'bg-blue-600/20 border-blue-500 ring-1 ring-blue-500' 
+                  ? `bg-gray-800/80 ${m.color} ring-1 ring-blue-500` 
                   : 'bg-gray-800 border-gray-700 hover:bg-gray-750'
                 }`}
               >
-                <m.icon className={`${m.color} mb-2`} size={24} />
+                <img src={m.iconSrc} alt={m.name} className="w-10 h-10 object-contain mb-2 rounded" />
                 <span className="text-xs font-bold text-center leading-tight">{m.name}</span>
               </button>
             ))}
