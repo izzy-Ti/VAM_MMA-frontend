@@ -88,7 +88,7 @@ const Fights = () => {
                   <span className="text-gray-400">Total Pool: <span className="text-green-500">{fight.totalPool || 0} ETB</span></span>
                 </div>
 
-                <div className="relative h-44 bg-gradient-to-b from-gray-800 to-gray-900 overflow-hidden">
+                <div className="relative h-44 bg-black overflow-hidden">
                   <div className="absolute left-0 bottom-0 w-[55%] h-[110%] transition-transform duration-500 group-hover:scale-105 origin-bottom-left">
                     {fight.fighter1Image && <img src={fight.fighter1Image} alt={fight.fighter1Name} className="h-full w-full object-contain object-bottom drop-shadow-[0_10px_20px_rgba(0,0,0,0.5)]" />}
                   </div>

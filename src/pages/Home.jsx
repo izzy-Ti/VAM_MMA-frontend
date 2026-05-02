@@ -66,7 +66,7 @@ const Home = () => {
           <div className="space-y-6">
             {fights.map(fight => (
               <div key={fight._id} className="bg-gray-900 border border-gray-800 rounded-2xl overflow-hidden shadow-xl hover:border-blue-900/50 transition-all group">
-                <div className="relative h-48 bg-gradient-to-t from-gray-900 to-transparent overflow-hidden">
+                <div className="relative h-48 bg-black overflow-hidden">
                   {/* Fighter 1 Image */}
                   <div className="absolute left-0 bottom-0 w-[55%] h-[110%] transition-transform duration-500 group-hover:scale-105 origin-bottom-left">
                     {fight.fighter1Image && (
