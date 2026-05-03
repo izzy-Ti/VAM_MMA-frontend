@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import api from '../../lib/api';
-import { Check, X, MessageSquare, Phone, Calendar, CreditCard } from 'lucide-react';
+import { Check, X, MessageSquare, Phone, Calendar, CreditCard, AlertCircle } from 'lucide-react';
 
 const AdminTransactions = () => {
   const [transactions, setTransactions] = useState([]);
@@ -93,7 +93,12 @@ const AdminTransactions = () => {
             {/* Top Row: User + Status */}
             <div className="flex justify-between items-start mb-4">
               <div>
-                <p className="font-bold text-white text-lg">{tx.userId?.firstName || 'Unknown'}</p>
+                <div className="flex items-center gap-2 mb-1">
+                  <p className="font-bold text-white text-lg">{tx.userId?.firstName || 'Unknown'}</p>
+                  <span className={`px-2 py-0.5 rounded text-[10px] font-bold uppercase tracking-wider ${tx.type === 'withdrawal' ? 'bg-purple-500/20 text-purple-400' : 'bg-blue-500/20 text-blue-400'}`}>
+                    {tx.type || 'Deposit'}
+                  </span>
+                </div>
                 <p className="text-xs text-gray-500">@{tx.userId?.username || 'no-username'}</p>
               </div>
               <span className={`px-3 py-1 rounded-full text-xs font-bold border ${statusStyle[tx.status] || statusStyle.pending}`}>
@@ -176,6 +181,10 @@ const AdminTransactions = () => {
                 <span className="text-white font-bold">{selectedTx?.userId?.firstName} (@{selectedTx?.userId?.username})</span>
               </div>
               <div className="flex justify-between text-sm">
+                <span className="text-gray-400">Type</span>
+                <span className={`font-bold uppercase ${selectedTx?.type === 'withdrawal' ? 'text-purple-400' : 'text-blue-400'}`}>{selectedTx?.type || 'Deposit'}</span>
+              </div>
+              <div className="flex justify-between text-sm">
                 <span className="text-gray-400">Amount</span>
                 <span className="text-blue-400 font-black">{selectedTx?.amount} ETB</span>
               </div>
@@ -194,6 +203,13 @@ const AdminTransactions = () => {
                 </div>
               )}
             </div>
+
+            {selectedTx?.type === 'withdrawal' && actionType === 'approve' && (
+              <div className="bg-yellow-500/10 border border-yellow-500/20 rounded-lg p-3 mb-5 text-sm text-yellow-500 font-medium flex items-start gap-2">
+                <AlertCircle size={18} className="shrink-0 mt-0.5" />
+                <p>Ensure you have manually transferred {selectedTx?.amount} ETB to {selectedTx?.phoneNumber} ({selectedTx?.method}) before approving this withdrawal.</p>
+              </div>
+            )}
 
             <div className="mb-5">
               <label className="block text-sm font-medium text-gray-400 mb-2 flex items-center">

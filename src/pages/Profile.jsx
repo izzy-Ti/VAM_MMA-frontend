@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { Link } from 'react-router-dom';
 import { UserCircle, Wallet, History, AlertCircle } from 'lucide-react';
 import api from '../lib/api';
 
@@ -32,17 +33,25 @@ const Profile = () => {
 
   return (
     <div className="space-y-6">
-      <div className="bg-gray-900 border border-gray-800 rounded-2xl p-6 shadow-lg flex items-center gap-4">
-        <div className="w-16 h-16 bg-blue-600 rounded-full flex items-center justify-center shadow-lg">
-          <UserCircle size={40} className="text-white" />
-        </div>
-        <div>
-          <h2 className="text-xl font-bold">{user.username}</h2>
-          <div className="flex items-center gap-2 mt-1">
-            <Wallet size={16} className="text-blue-400" />
-            <span className="text-sm font-medium text-gray-300">{user.balance} ETB</span>
+      <div className="bg-gray-900 border border-gray-800 rounded-2xl p-6 shadow-lg flex items-center justify-between gap-4">
+        <div className="flex items-center gap-4">
+          <div className="w-16 h-16 bg-blue-600 rounded-full flex items-center justify-center shadow-lg">
+            <UserCircle size={40} className="text-white" />
+          </div>
+          <div>
+            <h2 className="text-xl font-bold">{user.username}</h2>
+            <div className="flex items-center gap-2 mt-1">
+              <Wallet size={16} className="text-blue-400" />
+              <span className="text-sm font-medium text-gray-300">{user.balance} ETB</span>
+            </div>
           </div>
         </div>
+        <Link 
+          to="/withdraw"
+          className="bg-gray-800 hover:bg-gray-700 text-white text-sm font-bold py-2 px-4 rounded-xl border border-gray-700 transition-colors"
+        >
+          Withdraw
+        </Link>
       </div>
 
       <div>

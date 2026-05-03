@@ -4,6 +4,7 @@ import Layout from './components/Layout';
 import Home from './pages/Home';
 import Fights from './pages/Fights';
 import Deposit from './pages/Deposit';
+import Withdraw from './pages/Withdraw';
 import Profile from './pages/Profile';
 import AdminLayout from './components/AdminLayout';
 import Dashboard from './pages/admin/Dashboard';
@@ -61,6 +62,7 @@ function App() {
           <Route index element={<Home />} />
           <Route path="fights" element={<Fights />} />
           <Route path="deposit" element={<Deposit />} />
+          <Route path="withdraw" element={<Withdraw />} />
           <Route path="profile" element={<Profile />} />
         </Route>
         
